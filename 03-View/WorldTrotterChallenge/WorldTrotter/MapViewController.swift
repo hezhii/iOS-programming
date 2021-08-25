@@ -8,12 +8,19 @@
 import UIKit
 import MapKit
 
-class MapViewController: UIViewController {
+class MapViewController: UIViewController, MKMapViewDelegate {
     var mapView: MKMapView!
+    var locationManager: CLLocationManager!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         print("MapViewController loaded its view.")
+        
+        
+        mapView.delegate = self
+        locationManager = CLLocationManager()
+        locationManager.requestWhenInUseAuthorization()
+        mapView.showsUserLocation = true
     }
     
     override func loadView() {
@@ -74,5 +81,14 @@ class MapViewController: UIViewController {
         } else {
             mapView.pointOfInterestFilter = .excludingAll
         }
+    }
+    
+    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
+//        let span = MKCoordinateSpan(latitudeDelta: 0.08, longitudeDelta: 0.08)
+//        let theRegion = MKCoordinateRegion(center: userLocation.coordinate, span: span)
+//        mapView.setRegion(theRegion, animated: true)
+        
+        let region = MKCoordinateRegion(center: userLocation.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+        mapView.setRegion(region, animated: true)
     }
 }
