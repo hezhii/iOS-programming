@@ -7,8 +7,31 @@
 
 import UIKit
 
-class ConversionViewController: UIViewController {
-    let layer =  CAGradientLayer();
+class ConversionViewController: UIViewController, UITextFieldDelegate {
+    @IBOutlet var celsiusLabel: UILabel!
+    @IBOutlet var textField: UITextField!
+    var layer: CAGradientLayer!
+    
+    var fahrenheitValue: Measurement<UnitTemperature>? {
+        didSet {
+            updateCelsiusLabel()
+        }
+    }
+    var celsiusValue: Measurement<UnitTemperature>? {
+        if fahrenheitValue != nil {
+            return fahrenheitValue?.converted(to: .celsius)
+        } else {
+            return nil
+        }
+    }
+    
+    let numberFormatter: NumberFormatter = {
+        let nf = NumberFormatter()
+        nf.numberStyle = .decimal
+        nf.minimumIntegerDigits = 0
+        nf.maximumFractionDigits = 1
+        return nf
+    }()
 
 //    override func viewDidLoad() {
 //        super.viewDidLoad()
@@ -34,6 +57,7 @@ class ConversionViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad();
+        layer =  CAGradientLayer()
         layer.colors = [
             UIColor.purple.cgColor,
             UIColor.blue.cgColor,
@@ -44,9 +68,45 @@ class ConversionViewController: UIViewController {
         layer.zPosition = -1;
         
         view.layer.addSublayer(layer);
+        
+        updateCelsiusLabel()
     }
     
     override func viewWillLayoutSubviews() {
         layer.frame = view.bounds;
+    }
+    
+    @IBAction func textFieldChanged(_ textField: UITextField) {
+        if let text = textField.text,  let value = Double(text) {
+            fahrenheitValue = Measurement(value: value, unit: .fahrenheit)
+        } else {
+            fahrenheitValue = nil
+        }
+    }
+    
+    @IBAction func dismissKeyboard(_ sender: UITapGestureRecognizer) {
+        textField.resignFirstResponder()
+    }
+    
+    func updateCelsiusLabel() {
+        celsiusLabel.text = celsiusValue != nil ? numberFormatter.string(from: NSNumber(value: celsiusValue!.value)) : "???"
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        print("Current text: \(String(describing: textField.text))")
+        print("Replacement text: \(string)")
+        
+        // 无法退格
+//        if !NSPredicate(format: "SELF MATCHES %@", "[0-9.]").evaluate(with: string) {
+//            return false
+//        }
+        
+        if string.range(of: "[a-zA-Z]", options: .regularExpression) != nil{
+            return false
+        }
+        
+        let existingTextHasDecimalSeparator = textField.text?.range(of: ".")
+        let replacementTextHasDecimalSeparator = string.range(of: ".")
+        return existingTextHasDecimalSeparator != nil && replacementTextHasDecimalSeparator != nil ? false : true
     }
 }

@@ -63,12 +63,12 @@
 				A814B59C26CDF581003F893C /* AppDelegate.swift */,
 				A814B59E26CDF581003F893C /* SceneDelegate.swift */,
 				A814B5A026CDF581003F893C /* ConversionViewController.swift */,
+				A85085F526D4F3D300740A47 /* MapViewController.swift */,
 				A8DE114F26D4B659001E2B1E /* QuizViewController.swift */,
 				A814B5A226CDF581003F893C /* Main.storyboard */,
 				A814B5A526CDF583003F893C /* Assets.xcassets */,
 				A814B5A726CDF583003F893C /* LaunchScreen.storyboard */,
 				A814B5AA26CDF583003F893C /* Info.plist */,
-				A85085F526D4F3D300740A47 /* MapViewController.swift */,
 			);
 			path = WorldTrotter;
 			sourceTree = "<group>";
